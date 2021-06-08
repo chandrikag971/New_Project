@@ -17,6 +17,14 @@
             </tbody>
           </table>
         </ul>
+        <transition name="pop" appear>
+          <div class="modal" v-if="showModal">
+            <label v-for="n in lst2" v-bind:key="n">
+              <p>name : {{n.name}} <br>age : {{n.age}} <br>Gender : {{n.gender}}<br></p><br>
+              <button @click="showModal=false" class="button">Ok</button>
+            </label>
+          </div>
+        </transition>
     </div>
 </template>
 
@@ -26,7 +34,7 @@
 export default {
   name: 'App',
 
-  data:()=> ({lst:[],lst2:[]}),
+  data:()=> ({lst:[],lst2:[], showModal:false}),
 
   
   methods: {
@@ -45,6 +53,7 @@ export default {
           }
       },
       clickConsole:function(id) {
+        this.showModal=true
         const request=new XMLHttpRequest();
         request.open("GET","http://localhost:5000/users/"+id);
         request.send();
@@ -77,12 +86,57 @@ export default {
 }
 button {
     outline:none;
-    border-color:black;
+    border-color:gray;
     border-style:solid;
 
     :hover {
         color:black;
    }
+}
+
+.button {
+  border-color:none;
+  border-style:solid;
+  color: black;
+  background: white;
+  appearance: none;
+  font: inherit;
+  font-size: 1.0rem;
+  padding: .5em 1em;
+  border-radius: .3em;
+  cursor: pointer;
+}
+
+.modal {
+  position: absolute;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  text-align: center;
+  width: fit-content;
+  height: fit-content;
+  max-width: 22em;
+  padding: 2rem;
+  border-radius: 1rem;
+  //box-shadow: 0 5px 5px rgba(0, 0, 0, 2.0);
+  background: #FFF;
+  z-index: 999;
+  transform: none;
+}
+
+
+.pop-enter-active,
+.pop-leave-active {
+  transition: transform 0.4s cubic-bezier(0.5, 0, 0.5, 1), opacity 0.4s linear;
+}
+
+.pop-enter,
+.pop-leave-to {
+  opacity: 0;
+  transform: scale(0.3) translateY(-50%);
 }
 
 table {
