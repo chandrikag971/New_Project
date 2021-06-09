@@ -2,8 +2,6 @@
     <div id="app">
         <div class="group">
             <button v-on:click="consoleClick">GET USERS</button>
-            <br><br>
-            <button>SET USER</button>
         </div>
         <ul>
           <table>
@@ -12,6 +10,8 @@
                 <tr>
                   <td>{{n.id}}</td>
                   <button v-on:click="clickConsole(n.id)">get user details</button>
+                  <button v-on:click="showUpdateForm(n.id)">update user details
+                  </button>
                 </tr>
               </li>
             </tbody>
@@ -25,6 +25,21 @@
             </label>
           </div>
         </transition>
+        <div class="modal2" v-if="updateModal">
+          <form>
+              <label>id: {{formId}}</label>
+              <label>Name: </label>
+              <input type="text" v-model="formName"/><br><br>
+
+              <label>Age: </label>
+              <input type="text" v-model="formAge"/><br><br>
+
+              <label>Gender: </label>
+              <input type="text" v-model="formGender"/><br><br>
+
+              <button v-on:click="updateUser()">update</button>
+          </form>
+        </div>
     </div>
 </template>
 
@@ -34,7 +49,7 @@
 export default {
   name: 'App',
 
-  data:()=> ({lst:[],lst2:[], showModal:false}),
+  data:()=> ({lst:[],lst2:[], showModal:false,updateModal:false,formName:'',formAge:'',formGender:'',formId:''}),
 
   
   methods: {
@@ -66,8 +81,35 @@ export default {
               console.log("error")
             }
         }
-      }
+      },
+      showUpdateForm:function(id) {
+        this.updateModal=true;
+        console.log(id)
+        this.formId = id;
+        
+      },
+      updateUser:function() {
+        //const request=new XMLHttpRequest();
+        //request.open("POST","http://localhost:5000/users/"+this.formId);
+        //request.send('name='+this.formName+'&age='+this.formAge+'&gender='+this.formGender);
 
+        const params = {
+            name: this.formName,
+            age: this.formAge,
+            gender: this.formGender
+        }
+        console.log(params)
+
+        const http = new XMLHttpRequest()
+        http.open('POST', "http://localhost:5000/users/"+this.formId)
+        http.setRequestHeader('Content-type', 'application/json')
+        http.send(JSON.stringify(params)) // Make sure to stringify
+        console.log(http.status)
+        http.onload = function () {
+        
+          console.log(http.status)
+        }
+      }
   }
 };
 </script>
@@ -86,17 +128,13 @@ export default {
 }
 button {
     outline:none;
-    border-color:gray;
+    border-color:black;
     border-style:solid;
-
-    :hover {
-        color:black;
-   }
 }
 
 .button {
   border-color:none;
-  border-style:solid;
+  border-style:none;
   color: black;
   background: white;
   appearance: none;
@@ -121,7 +159,6 @@ button {
   max-width: 22em;
   padding: 2rem;
   border-radius: 1rem;
-  //box-shadow: 0 5px 5px rgba(0, 0, 0, 2.0);
   background: #FFF;
   z-index: 999;
   transform: none;
