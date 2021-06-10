@@ -3,6 +3,7 @@
         <div class="group">
             <button v-on:click="consoleClick">GET USERS</button>
         </div>
+        <button v-on:click="insertUserForm">INSERT USER</button>
         <ul>
           <table>
             <tbody>
@@ -25,9 +26,21 @@
             </label>
           </div>
         </transition>
-        <div class="modal2" v-if="updateModal">
-          <form>
-              <label>id: {{formId}}</label>
+          <div class="modal2" v-if="updateModal">
+            <form>
+              <label>Name: </label>
+              <input type="text" v-model="formName"/><br><br>
+
+              <label>Age: </label>
+              <input type="text" v-model="formAge"/><br><br>
+
+              <label>Gender: </label>
+              <input type="text" v-model="formGender"/><br><br>
+              <button v-on:click="updateUser()">update</button>
+            </form>
+          </div>
+          <div class="modal3" v-if="insertModal">
+            <form>
               <label>Name: </label>
               <input type="text" v-model="formName"/><br><br>
 
@@ -37,9 +50,9 @@
               <label>Gender: </label>
               <input type="text" v-model="formGender"/><br><br>
 
-              <button v-on:click="updateUser()">update</button>
-          </form>
-        </div>
+              <button v-on:click="insertUser()">insert</button>
+            </form>
+            </div>
     </div>
 </template>
 
@@ -49,7 +62,7 @@
 export default {
   name: 'App',
 
-  data:()=> ({lst:[],lst2:[], showModal:false,updateModal:false,formName:'',formAge:'',formGender:'',formId:''}),
+  data:()=> ({lst:[],lst2:[], showModal:false,updateModal:false,formName:'',formAge:'',formGender:'',formId:'',insertModal:false,id:null}),
 
   
   methods: {
@@ -106,11 +119,37 @@ export default {
         http.send(JSON.stringify(params)) // Make sure to stringify
         console.log(http.status)
         http.onload = function () {
-        
+
           console.log(http.status)
         }
+      },
+
+      insertUserForm:function() {
+      this.insertModal=true;
+      this.formId=this._uid;
+      console.log(this.formId);
+      },
+
+      insertUser:function() {
+        const params = {
+          name: this.formName,
+          age:this.formAge,
+          gender:this.formGender,
+        }
+        console.log(params)
+
+        const http = new XMLHttpRequest()
+        http.open('POST', "http://localhost:5000/users/")
+        http.setRequestHeader('Content-type', 'application/json')
+        http.send(JSON.stringify(params)) // Make sure to stringify
+        console.log(http.status)
+        http.onload = function () {
+
+          console.log(http.status)
+        }
+
       }
-  }
+  },
 };
 </script>
 
