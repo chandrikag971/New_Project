@@ -3,7 +3,7 @@
         <div class="group">
             <button v-on:click="consoleClick">GET USERS</button>
         </div>
-        <button v-on:click="insertUserForm">INSERT USER</button>
+        <button v-on:click="insertUserForm">INSERT USER</button><br><br>
         <ul>
           <table>
             <tbody>
@@ -13,6 +13,7 @@
                   <button v-on:click="clickConsole(n.id)">get user details</button>
                   <button v-on:click="showUpdateForm(n.id)">update user details
                   </button>
+                  <button v-on:click="deleteUser(n.id)">DELETE USER</button>
                 </tr>
               </li>
             </tbody>
@@ -52,7 +53,7 @@
 
               <button v-on:click="insertUser()">insert</button>
             </form>
-            </div>
+          </div>
     </div>
 </template>
 
@@ -62,7 +63,7 @@
 export default {
   name: 'App',
 
-  data:()=> ({lst:[],lst2:[], showModal:false,updateModal:false,formName:'',formAge:'',formGender:'',formId:'',insertModal:false,id:null}),
+  data:()=> ({lst:[],lst2:[], showModal:false,updateModal:false,formName:'',formAge:'',formGender:'',formId:'',insertModal:false,insertId:null,deleteModal:false}),
 
   
   methods: {
@@ -148,6 +149,17 @@ export default {
           console.log(http.status)
         }
 
+      },
+
+      deleteUser:function(id) {
+        this.deleteModal=true;
+        this.Id=id;
+        const http = new XMLHttpRequest()
+        http.open("POST", "http://localhost:5000/users/del/"+this.Id)
+        http.setRequestHeader('Content-type', 'application/json')
+        http.send(JSON.stringify()) // Make sure to stringify
+        console.log("deleted")
+  
       }
   },
 };
