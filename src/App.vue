@@ -7,15 +7,16 @@
         <ul>
           <table>
             <tbody>
-              <li v-for="n in lst" v-bind:key="n">
-                <tr>
-                  <td>{{n.id}}</td>
-                  <button v-on:click="clickConsole(n.id)">get user details</button>
-                  <button v-on:click="showUpdateForm(n.id)">update user details
-                  </button>
-                  <button v-on:click="deleteUser(n.id)">DELETE USER</button>
-                </tr>
-              </li>
+                <li v-for="n in lst" v-bind:key="n">
+                  <tr>
+                      <td>{{n.id}}
+                        <button v-on:click="clickConsole(n.id)">get user details</button>
+                        <button v-on:click="showUpdateForm(n.id)">update user details
+                        </button>
+                        <button v-on:click="deleteUser(n.id)">DELETE USER</button>
+                      </td>
+                  </tr>
+                </li>
             </tbody>
           </table>
         </ul>
@@ -37,7 +38,7 @@
 
               <label>Gender: </label>
               <input type="text" v-model="formGender"/><br><br>
-              <button v-on:click="updateUser()">update</button>
+              <button @click="updateUser()">update</button>
             </form>
           </div>
           <div class="modal3" v-if="insertModal">
@@ -98,31 +99,23 @@ export default {
       },
       showUpdateForm:function(id) {
         this.updateModal=true;
-        console.log(id)
         this.formId = id;
+        console.log(this.formId);
         
       },
       updateUser:function() {
-        //const request=new XMLHttpRequest();
-        //request.open("POST","http://localhost:5000/users/"+this.formId);
-        //request.send('name='+this.formName+'&age='+this.formAge+'&gender='+this.formGender);
-
         const params = {
             name: this.formName,
             age: this.formAge,
             gender: this.formGender
         }
-        console.log(params)
+        //console.log(params)
 
-        const http = new XMLHttpRequest()
-        http.open('POST', "http://localhost:5000/users/"+this.formId)
+        const http = new XMLHttpRequest();
+        http.open("POST", "http://localhost:5000/users/"+this.formId);
         http.setRequestHeader('Content-type', 'application/json')
-        http.send(JSON.stringify(params)) // Make sure to stringify
-        console.log(http.status)
-        http.onload = function () {
-
-          console.log(http.status)
-        }
+        http.send(JSON.stringify(params)); // Make sure to stringify
+        console.log("updated successfully")
       },
 
       insertUserForm:function() {
@@ -137,17 +130,13 @@ export default {
           age:this.formAge,
           gender:this.formGender,
         }
-        console.log(params)
+        //console.log(params)
 
         const http = new XMLHttpRequest()
-        http.open('POST', "http://localhost:5000/users/")
+        http.open("POST", "http://localhost:5000/users/")
         http.setRequestHeader('Content-type', 'application/json')
         http.send(JSON.stringify(params)) // Make sure to stringify
-        console.log(http.status)
-        http.onload = function () {
-
-          console.log(http.status)
-        }
+        console.log("inserted successfully")
 
       },
 
@@ -158,7 +147,7 @@ export default {
         http.open("POST", "http://localhost:5000/users/del/"+this.Id)
         http.setRequestHeader('Content-type', 'application/json')
         http.send(JSON.stringify()) // Make sure to stringify
-        console.log("deleted")
+        console.log("deleted successfully")
   
       }
   },
@@ -175,30 +164,50 @@ export default {
   margin-top:60px;
 }
 .group {
-  margin:10px;
+  margin:20px;
+
+  .hover {
+    background-color:hsl(0, 100%, 90%);
+  }
 }
 button {
     outline:none;
+    color:#2c3e50;
     border-color:black;
+    //border-radius: 50%;
     border-style:solid;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: normal;
+    height: fit-content;
+    width: fit-content;
+    padding: 0.5rem;
+    transform:none;
+}
+
+button:hover {
+  background-color: hsl(0, 100%, 90%);
+  //color: pink;
 }
 
 .button {
-  border-color:none;
-  border-style:none;
+  border-color:gray;
+  border-style:solid;
   color: black;
-  background: white;
+  //background-color: hsl(0, 100%, 90%);
   appearance: none;
   font: inherit;
   font-size: 1.0rem;
   padding: .5em 1em;
   border-radius: .3em;
   cursor: pointer;
+
+  :hover {background-color:rgb(255,0,0);opacity:0.6;}
 }
 
 .modal {
   position: absolute;
-  position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
@@ -209,8 +218,50 @@ button {
   height: fit-content;
   max-width: 22em;
   padding: 2rem;
+  border: 2px solid #44475C;
+  color: purple;
+  border-radius: 2rem;
+  background-color:#FFF;
+  z-index: 999;
+  transform: none;
+}
+
+.modal2 {
+  position: relative;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  text-align: center;
+  width: fit-content;
+  height: fit-content;
+  max-width: 22em;
+  padding: 2rem;
+  border: 1px solid #44475C;
+  color: blue;
   border-radius: 1rem;
-  background: #FFF;
+  background-color:#FFF;
+  z-index: 999;
+  transform: none;
+}
+
+.modal3 {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  text-align: center;
+  width: fit-content;
+  height: fit-content;
+  max-width: 22em;
+  padding: 2rem;
+  border: 1px solid #44475C;
+  color: green;
+  border-radius: 1rem;
+  background-color:#FFF;
   z-index: 999;
   transform: none;
 }
@@ -229,22 +280,19 @@ button {
 
 table {
   font-family: 'Open Sans', sans-serif;
-  width: 750px;
   border-collapse: collapse;
   border: 3px solid #44475C;
   margin: 10px 10px 0 10px;
 }
-table th {
-  text-transform: uppercase;
+
+
+td {
   text-align: left;
-  background: #44475C;
-  color: #FFF;
-  padding: 8px;
-  min-width: 30px;
+  border: 1px solid #cecfd5;
+  padding: 8px 10px;
 }
 
-table td {
-  text-align: left;
-  padding: 8px;
-}
+tr:hover {background-color: rgba(255, 0, 0, 0.3);}
+
+
 </style>
