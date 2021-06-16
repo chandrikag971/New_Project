@@ -1,70 +1,79 @@
 <template>
-    <div id="app">
-        <div class="group">
-            <button v-on:click="consoleClick">GET USERS</button>
-        </div>
-        <button v-on:click="insertUserForm">INSERT USER</button><br><br>
-        <ul>
-          <table>
-            <tbody>
-                <li v-for="n in lst" v-bind:key="n">
-                  <tr>
-                      <td>{{n.id}}
-                        <button v-on:click="clickConsole(n.id)">get user details</button>
-                        <button v-on:click="showUpdateForm(n.id)">update user details
-                        </button>
-                        <button v-on:click="deleteUser(n.id)">DELETE USER</button>
-                      </td>
-                  </tr>
-                </li>
-            </tbody>
-          </table>
-        </ul>
-        <transition name="pop" appear>
-          <div class="modal" v-if="showModal">
-            <label v-for="n in lst2" v-bind:key="n">
-              <p>name : {{n.name}} <br>age : {{n.age}} <br>Gender : {{n.gender}}<br></p><br>
-              <button @click="showModal=false" class="button">Ok</button>
-            </label>
-          </div>
-        </transition>
-          <div class="modal2" v-if="updateModal">
-            <form>
-              <label>Name: </label>
-              <input type="text" v-model="formName"/><br><br>
-
-              <label>Age: </label>
-              <input type="text" v-model="formAge"/><br><br>
-
-              <label>Gender: </label>
-              <input type="text" v-model="formGender"/><br><br>
-              <button @click="updateUser()">update</button>
-            </form>
-          </div>
-          <div class="modal3" v-if="insertModal">
-            <form>
-              <label>Name: </label>
-              <input type="text" v-model="formName"/><br><br>
-
-              <label>Age: </label>
-              <input type="text" v-model="formAge"/><br><br>
-
-              <label>Gender: </label>
-              <input type="text" v-model="formGender"/><br><br>
-
-              <button v-on:click="insertUser()">insert</button>
-            </form>
-          </div>
+  <div id="nav">
+    <div class="form-inline">
+        <form class="form-inline my-2 my-lg=0">
+            <router-link class="nav-link" to="/login">Login</router-link>
+            <router-link class="nav-link" to="/register">Register</router-link>
+        </form>
     </div>
-</template>
+  </div>
+  <router-view/><br><br><br><br><br>
 
+  <div class="group">
+          <button v-on:click="consoleClick">GET USERS</button>
+      </div>
+      <button v-on:click="insertUserForm">INSERT USER</button><br><br>
+      <ul>
+        <table>
+          <tbody>
+              <li v-for="n in lst" v-bind:key="n">
+                <tr>
+                    <td>{{n.id}}
+                      <button v-on:click="clickConsole(n.id)">get user details</button>
+                      <button v-on:click="showUpdateForm(n.id)">update user details
+                      </button>
+                      <button v-on:click="deleteUser(n.id)">DELETE USER</button>
+                    </td>
+                </tr>
+              </li>
+          </tbody>
+        </table>
+      </ul>
+      <transition name="pop" appear>
+        <div class="modal" v-if="showModal">
+          <label v-for="n in lst2" v-bind:key="n">
+            <p>name : {{n.name}} <br>age : {{n.age}} <br>Gender : {{n.gender}}<br></p><br>
+            <button @click="showModal=false" class="button">Ok</button>
+          </label>
+          </div>
+      </transition>
+      <div class="modal2" v-if="updateModal">
+        <form>
+          <label>Name: </label>
+          <input type="text" v-model="formName"/><br><br>
+
+          <label>Age: </label>
+          <input type="text" v-model="formAge"/><br><br>
+
+          <label>Gender: </label>
+          <input type="text" v-model="formGender"/><br><br>
+          <button @click="updateUser()" class="button" v-if="updateModal=true">update</button>
+                
+        </form>
+      </div>
+      <div class="modal3" v-if="insertModal">
+        <form>
+          <label>Name: </label>
+          <input type="text" v-model="formName"/><br><br>
+
+          <label>Age: </label>
+          <input type="text" v-model="formAge"/><br><br>
+
+          <label>Gender: </label>
+          <input type="text" v-model="formGender"/><br><br>
+
+          <button v-on:click="insertUser()">insert</button>
+        </form>
+      </div>
+
+</template>
 
 <script>
 
+//import registerForm from './components/registerForm.vue'
 export default {
   name: 'App',
-
-  data:()=> ({lst:[],lst2:[], showModal:false,updateModal:false,formName:'',formAge:'',formGender:'',formId:'',insertModal:false,insertId:null,deleteModal:false}),
+  data:()=> ({lst:[],lst2:[], showModal:false,updateModal:false,formName:'',formAge:'',formGender:'',formId:'',insertModal:false,insertId:null,deleteModal:false,isHidden:false}),
 
   
   methods: {
@@ -99,6 +108,7 @@ export default {
       },
       showUpdateForm:function(id) {
         this.updateModal=true;
+        this.isHidden=false;
         this.formId = id;
         console.log(this.formId);
         
@@ -109,13 +119,13 @@ export default {
             age: this.formAge,
             gender: this.formGender
         }
-        //console.log(params)
+            //console.log(params)
 
         const http = new XMLHttpRequest();
         http.open("POST", "http://localhost:5000/users/"+this.formId);
         http.setRequestHeader('Content-type', 'application/json')
         http.send(JSON.stringify(params)); // Make sure to stringify
-        console.log("updated successfully")
+        console.log("updated successfully");
       },
 
       insertUserForm:function() {
@@ -154,15 +164,32 @@ export default {
 };
 </script>
 
-<style scoped>
+
+<style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top:60px;
 }
+.form-inline {
+  text-align:right;
+  margin:0px;
+}
+#nav {
+  padding: 30px;
+
+  a {
+    font-weight: bold;
+    color: #2c3e50;
+
+    &.router-link-exact-active {
+      color: #42b983;
+    }
+  }
+}
+
 .group {
   margin:20px;
 
@@ -227,7 +254,7 @@ button:hover {
 }
 
 .modal2 {
-  position: relative;
+  position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
@@ -293,6 +320,5 @@ td {
 }
 
 tr:hover {background-color: rgba(255, 0, 0, 0.3);}
-
 
 </style>
